@@ -15,7 +15,7 @@ import Student from './views/student/Student.vue';
 import VueRouter from 'vue-router';
 const routes = [{
         path: '/',
-        redirect: '/main'
+        redirect: '/login'
     },
     { path: '/login', component: TheLogin },
     {
