@@ -22,6 +22,7 @@ body {
 }
 
 .t-main {
+    min-width: 1300px;
     display: flex;
     flex-direction: row;
 }
