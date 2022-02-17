@@ -1,4 +1,4 @@
-# student.managerment
+# VNEDU
 
 ## Project setup
 ```
