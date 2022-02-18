@@ -4,7 +4,7 @@
             <div class="top-logo"></div>
             <div class="top-name"> <span style="color: #5293C7;">vn</span><span style="color:#F2852A">Edu</span></div>
         </div>
-        <div class="menu-bottom" style="display: none;">
+        <div class="menu-bottom" >
             <router-link style="text-decoration: none;" to="/overview">
                 <div class="bottom">
                     <div class="bottom-logo dashboard"></div>
@@ -37,7 +37,7 @@
             </router-link>
         </div>
 
-        <div class="menu-bottom" >
+        <div class="menu-bottom" style="display: none;">
             <router-link style="text-decoration: none;" to="/overview">
                 <div class="bottom">
                     <div class="bottom-logo dashboard"></div>

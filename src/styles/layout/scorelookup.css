@@ -95,7 +95,7 @@
 }
 
 tr {
-    height: 26px;
+    height: 24px;
 }
 
 .m-table thead th {
@@ -129,7 +129,7 @@ tr {
 
 .box-score {
     width: 400px;
-    height: 26px;
+    height: 24px;
     background-color: #E9EBEE;
     margin-top: 8px;
     float: right;
@@ -150,7 +150,7 @@ tr {
 .score-medium {
     width: 200px;
     text-align: center;
-    line-height: 26px;
+    line-height: 24px;
     font-size: 14px;
     font-weight: 700;
     color: rgb(82, 56, 56);
