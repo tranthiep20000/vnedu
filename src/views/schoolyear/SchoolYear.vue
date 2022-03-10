@@ -40,6 +40,7 @@ import { eventBus } from '../../main'
 
 import SchoolYearInfor from './SchoolYearInfor.vue'
 import DeleteSchoolYear from './DeleteSchoolYear.vue'
+import { mapGetters } from 'vuex'
 export default {
     components: {
         SchoolYearInfor, DeleteSchoolYear
@@ -48,6 +49,9 @@ export default {
         return {
             schoolyears: [],
         }
+    },
+    computed:{
+        ...mapGetters(['URLAPI']),
     },
     methods: {
         /**
@@ -68,7 +72,7 @@ export default {
         loadDataSchoolYear(){
             var m = this;
             axios
-            .get('https://www.vnedu.somee.com/api/v1/SchoolYears')
+            .get(`${m.URLAPI}/api/v1/SchoolYears`)
             .then(function(response){
                 if(response && response.data)
                 {
@@ -84,8 +88,9 @@ export default {
          * CreatedBy: TTThiep(28/01/2022)
          */
         clickBtnEdit(schoolyearId){
+            var m = this;
             axios
-            .get(`https://www.vnedu.somee.com/api/v1/SchoolYears/${schoolyearId}`)
+            .get(`${m.URLAPI}/api/v1/SchoolYears/${schoolyearId}`)
             .then(function (response){
                 if(response && response.data)
                 { 

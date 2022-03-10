@@ -15,14 +15,18 @@
 <script>
 import axios from 'axios';
 import { eventBus } from '../../main'
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
             isShowDeleteAdministration: false,
-            administrationId: null,
+            UserId: null,
             titleName: null,
             m2: null,
         }
+    },
+    computed: {
+        ...mapGetters(['URLAPI']),
     },
     methods: {
         /**
@@ -39,7 +43,7 @@ export default {
         clickBtnYes(){
             var m = this;
             axios
-            .delete(`https://www.vnedu.somee.com/api/v1/Administrations/${m.administrationId}`)
+            .delete(`${m.URLAPI}/api/v1/Useds/${m.UserId}`)
             .then(function(response){
                 console.log(response);
                 // gửi dữ liệu sang component FormToastMessage là 'true'
@@ -59,8 +63,8 @@ export default {
         eventBus.$on("isShowDeleteAdministrationWas", (isShowDeleteAdministrationData) =>{
             m.isShowDeleteAdministration = isShowDeleteAdministrationData;
         });
-        eventBus.$on("administrationIdWas", (administrationIdData) =>{
-            m.administrationId = administrationIdData;
+        eventBus.$on("administrationIdWas", (UserIdData) =>{
+            m.UserId = UserIdData;
         });
         eventBus.$on("titlenameWas", (titlenameData) =>{
             m.titleName = titlenameData;

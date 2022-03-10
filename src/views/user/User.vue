@@ -6,7 +6,7 @@
         </div>
         <div class="box-search">
             <div class="box-input-text">
-                <input type="text" class="input-text" placeholder="Tìm kiếm theo mã người dùng">
+                <input type="text" class="input-text" placeholder="Tìm kiếm theo tên, số điện thoại">
                 <div class="box-icon-search">
                     <div class="icon-search"></div>
                 </div>
@@ -17,22 +17,22 @@
                 <thead>
                     <tr>
                         <th class="text-align-center" style="width: 100px">STT</th>
-                        <th class="text-align-center">Mã người dùng</th>
-                        <th class="text-align-center">Mật khẩu</th>
+                        <th class="text-align-center">Tên người dùng</th>
+                        <th class="text-align-center">Số điện thoại</th>
                         <th class="text-align-center">Tên quyền</th>
                         <th class="text-align-center" style="width: 150px">Chức năng</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(administration,i) in administrations" :key="administration.AdministrationId">
+                    <tr v-for="(user,i) in users" :key="user.UserId">
                         <th class="text-align-center">{{++i}}</th>
-                        <th class="text-align-center">{{administration.AdministrationCode}}</th>
-                        <th class="text-align-center">{{administration.PassWord}}</th>
-                        <th class="text-align-center">{{administration.DecentralizationName}}</th>
+                        <th class="text-align-center">{{user.UserName}}</th>
+                        <th class="text-align-center">{{user.PhoneNumber}}</th>
+                        <th class="text-align-center">{{user.DecentralizationName}}</th>
                         <th class="text-align-center">
                             <div class="box-function">
-                                <div class="btn-edit" @click="clickBtnEdit(administration.AdministrationId)"></div>
-                                <div class="btn-delete" @click="clickBtnDelete(administration.AdministrationId, administration.AdministrationCode)"></div>
+                                <div class="btn-edit" @click="clickBtnEdit(user.UserId)"></div>
+                                <div class="btn-delete" @click="clickBtnDelete(user.UserId, user.UserName)"></div>
                             </div>
                         </th>
                     </tr>  
@@ -40,7 +40,7 @@
             </table>
         </div>
         <div class="bottom-schoolyear box-type-paging">
-            <div class="box-sum">Tổng số: {{administrations.length}} bản ghi</div>
+            <div class="box-sum">Tổng số: {{users.length}} bản ghi</div>
             <div class="box-paging"></div>
             <div class="box-size">
                 <input type="text" class="box-size-input" readonly :value="pagename">
@@ -61,12 +61,12 @@ import axios from 'axios'
 import { eventBus } from '../../main'
 import UserInfor from './UserInfor.vue'
 import DeleteUser from './DeleteUser.vue'
-
+import { mapGetters } from 'vuex'
 export default {
   components: { UserInfor, DeleteUser },
     data() {
         return {
-            administrations: [],
+            users: [],
             pages: [
                 {
                     index: 10,
@@ -92,6 +92,9 @@ export default {
             pagename: "10 bản ghi trên 1 trang",
             isShowBoxItemSize: false,
         }
+    },
+    computed: {
+        ...mapGetters(['URLAPI']),
     },
     methods: {
         /**
@@ -127,11 +130,11 @@ export default {
         loadDataAdministration(){
             var m = this;
             axios
-            .get('https://www.vnedu.somee.com/api/v1/Administrations')
+            .get(`${m.URLAPI}/api/v1/Useds`)
             .then(function(response){
                 if(response && response.data)
                 {
-                    m.administrations = response.data;
+                    m.users = response.data;
                 }
             })
             .catch(function(res){
@@ -142,9 +145,10 @@ export default {
          * click btn sửa
          * CreatedBy: TTThiep(08/02/2022)
          */
-        clickBtnEdit(administrationId){
+        clickBtnEdit(userId){
+            var m = this;
             axios
-            .get(`https://www.vnedu.somee.com/api/v1/Administrations/${administrationId}`)
+            .get(`${m.URLAPI}/api/v1/Useds/${userId}`)
             .then(function (response){
                 if(response && response.data)
                 { 
@@ -163,11 +167,11 @@ export default {
          * click btn xóa
          * CreatedBy: TTThiep(08/02/2022)
          */
-        clickBtnDelete(administrationId, administrationCode){
+        clickBtnDelete(userId, userName){
             eventBus.$emit('thisWas', this);
             eventBus.$emit("isShowDeleteAdministrationWas", true);
-            eventBus.$emit("administrationIdWas", administrationId);
-            eventBus.$emit("titlenameWas", `bạn có thực sự muốn xóa ${administrationCode} không?`);
+            eventBus.$emit("administrationIdWas", userId);
+            eventBus.$emit("titlenameWas", `bạn có thực sự muốn xóa ${userName} không?`);
         },
     },
     created() {

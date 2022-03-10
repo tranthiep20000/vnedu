@@ -1,5 +1,5 @@
 <template>
-    <div class="t-dialog" v-show="isShowDeleteStudent">
+    <div class="t-dialog" v-show="isShowDeleteStudentClass">
         <div class="m-form">
             <div class="form-title">
                 <div class="title-icon"></div>
@@ -19,8 +19,11 @@ import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
-            isShowDeleteStudent: false,
+            isShowDeleteStudentClass: false,
             studentId: null,
+            classId: null,
+            schoolyearId: null,
+            semesterId: null,
             titleName: null,
             m2: null,
         }
@@ -34,7 +37,7 @@ export default {
          * CreatedBy: TTThiep(28/01/2022)
          */
         clickBtnNo(){
-            this.isShowDeleteStudent = !this.isShowDeleteStudent;
+            this.isShowDeleteStudentClass = !this.isShowDeleteStudentClass;
         },
         /**
          * click Btn có
@@ -43,15 +46,15 @@ export default {
         clickBtnYes(){
             var m = this;
             axios
-            .delete(`${m.URLAPI}/api/v1/Students/${m.studentId}`)
+            .delete(`${m.URLAPI}/api/v1/Student_Classs/DeleteStudent_Class?StudentId=${m.studentId}&ClassId=${m.classId}&SemesterId=${m.semesterId}&SchoolYearId=${m.schoolyearId}`)
             .then(function(response){
                 console.log(response);
                 // gửi dữ liệu sang component FormToastMessage là 'true'
                 eventBus.$emit("isShowToastMessageWas", true);
                 // gửi dữ liệu sang component FormToastMessage là 'xóa học sinh thành công'
                 eventBus.$emit("TitleToastMessageWas", "Xóa học sinh thành công");
-                m.m2.loadDataStudent();
-                m.isShowDeleteStudent = !m.isShowDeleteStudent;
+                m.m2.loadDataStudent_Class();
+                m.isShowDeleteStudentClass = !m.isShowDeleteStudentClass;
             })
             .catch(function(res){
                 console.log(res);
@@ -60,8 +63,8 @@ export default {
     },
     created() {
         var  m = this;
-        eventBus.$on("isShowDeleteStudentWas", (isShowDeleteStudentData) =>{
-            m.isShowDeleteStudent = isShowDeleteStudentData;
+        eventBus.$on("isShowDeleteStudentClassWas", (isShowDeleteStudentClassData) =>{
+            m.isShowDeleteStudentClass = isShowDeleteStudentClassData;
         });
         eventBus.$on("studentIdWas", (studentIdData) =>{
             m.studentId = studentIdData;
@@ -71,6 +74,15 @@ export default {
         });
         eventBus.$on("thisWas", (thisData) =>{
             m.m2 = thisData;
+        });
+         eventBus.$on("schoolyearIdWas", (schoolyearIdData) =>{
+            m.schoolyearId = schoolyearIdData;
+        });
+        eventBus.$on("semesterIdWas", (semesterIdData) =>{
+            m.semesterId = semesterIdData;
+        });
+        eventBus.$on("classIdWas", (classIdData) =>{
+            m.classId = classIdData;
         });
     },
 }

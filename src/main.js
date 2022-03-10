@@ -6,14 +6,17 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
     state: {
-        student: {},
+        user: {},
+        URLAPI: 'https://www.vnedu.somee.com'
+            // URLAPI: 'https://localhost:7101'
     },
     getters: {
-        student: state => state.student,
+        user: state => state.user,
+        URLAPI: state => state.URLAPI
     },
     mutations: {
-        setStudent(state, student) {
-            state.student = student;
+        setUser(state, user) {
+            state.user = user;
         },
     },
     actions: {

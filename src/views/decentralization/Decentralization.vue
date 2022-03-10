@@ -18,7 +18,7 @@
                     <tr v-for="(decentralization,i) in decentralizations" :key="decentralization.DecentralizationId">
                         <th class="text-align-center">{{++i}}</th>
                         <th class="text-align-center">{{decentralization.DecentralizationName}}</th>
-                        <th class="text-align-center">{{decentralization.DescriptionName}}</th>
+                        <th class="text-align-center">{{decentralization.Description}}</th>
                         <th class="text-align-center">
                             <div class="box-function">
                                 <div class="btn-edit" @click="clickBtnEdit(decentralization.DecentralizationId)"></div>
@@ -41,13 +41,16 @@ import axios from 'axios'
 import { eventBus } from '../../main'
 import DecentralizationInfor from './DecentralizationInfor.vue'
 import DeleteDecentralization from './DeleteDecentralization.vue'
-
+import { mapGetters } from 'vuex'
 export default {
   components: { DecentralizationInfor, DeleteDecentralization },
     data() {
         return {
             decentralizations: [],
         }
+    },
+    computed: {
+        ...mapGetters(['URLAPI']),
     },
     methods: {
         /**
@@ -68,7 +71,7 @@ export default {
         loadDataDecentralization(){
             var m = this;
             axios
-            .get('https://www.vnedu.somee.com/api/v1/Decentralizations')
+            .get(`${m.URLAPI}/api/v1/Decentralizations`)
             .then(function(response){
                 if(response && response.data)
                 {
@@ -84,8 +87,9 @@ export default {
          * CreatedBy: TTThiep(28/01/2022)
          */
         clickBtnEdit(decentralizationId){
+            var m = this;
             axios
-            .get(`https://www.vnedu.somee.com/api/v1/Decentralizations/${decentralizationId}`)
+            .get(`${m.URLAPI}/api/v1/Decentralizations/${decentralizationId}`)
             .then(function (response){
                 if(response && response.data)
                 { 

@@ -40,7 +40,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['student']),
+        ...mapGetters(['user', 'URLAPI']),
     },
 
     mounted() {
@@ -61,7 +61,7 @@ export default {
             }
             else
             {
-                if(m.currentpassword != m.student.PassWord)
+                if(m.currentpassword != m.user.Password)
                 {
                     eventBus.$emit("errorWas", "Mật khẩu hiện tại chưa đúng.");
                     eventBus.$emit("isShowFormWaningWas", true);
@@ -87,7 +87,7 @@ export default {
                              * CreatedBy: TTThiep(26/01/2022)
                              */
                             axios
-                            .put(`https://www.vnedu.somee.com/api/v1/Students/UpdatePassword?StudentId=${m.student.StudentId}&PassWord=${m.newpassword}`)
+                            .put(`${m.URLAPI}/api/v1/Useds/UpdatePassword?UserId=${m.user.UserId}&Password=${m.newpassword}`)
                             .then(function (response){
                                 if(response && response.data)
                                 {
@@ -184,11 +184,6 @@ export default {
         eventBus.$on('isShowDialogChangePasswordWas', (isShowDialogChangPasswordData) => {
             m.isShowDialogChangPassword = isShowDialogChangPasswordData;
         });
-
-        // nhận dữ liệu từ component TheLogin
-        eventBus.$on('userWas', (userData) =>{
-            m.user = userData;
-        })
     },
 }
 </script>

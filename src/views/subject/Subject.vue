@@ -39,6 +39,7 @@ import axios from 'axios'
 import { eventBus } from '../../main'
 import SubjectInfor from './SubjectInfor.vue'
 import DeleteSubject from './DeleteSubject.vue'
+import { mapGetters } from 'vuex'
 export default {
   components: { SubjectInfor, DeleteSubject },
 
@@ -46,6 +47,9 @@ export default {
         return {
             subjects: [],
         }
+    },
+    computed: {
+        ...mapGetters(['URLAPI']),
     },
     methods: {
         /**
@@ -66,7 +70,7 @@ export default {
         loadDataSubject(){
             var m = this;
             axios
-            .get('https://www.vnedu.somee.com/api/v1/Subjects')
+            .get(`${m.URLAPI}/api/v1/Subjects`)
             .then(function(response){
                 if(response && response.data)
                 {
@@ -82,8 +86,9 @@ export default {
          * CreatedBy: TTThiep(28/01/2022)
          */
         clickBtnEdit(subjectId){
+            var m = this;
             axios
-            .get(`https://www.vnedu.somee.com/api/v1/Subjects/${subjectId}`)
+            .get(`${m.URLAPI}/api/v1/Subjects/${subjectId}`)
             .then(function (response){
                 if(response && response.data)
                 { 

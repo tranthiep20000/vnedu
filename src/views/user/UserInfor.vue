@@ -5,12 +5,28 @@
                 <div class="icon-x"></div>
             </div>
             <div class="box-schoolyearinfor-top">
-                <div class="schoolyearinfor-name">Nhập mã người dùng</div>
-                <input ref="administrationcode" type="text" class="schoolyearinfor-input" placeholder="Nhập mã người dùng" v-model="administration.AdministrationCode">
+                <div class="schoolyearinfor-name">Nhập tên người dùng</div>
+                <input ref="administrationcode" type="text" class="schoolyearinfor-input" placeholder="Nhập tên người dùng" v-model="user.UserName">
             </div>
-            <div v-if="formod == 'edit'" class="box-schoolyearinfor-top">
+            <div class="box-schoolyearinfor-top">
+                <div class="schoolyearinfor-name">Nhập số điện thoại</div>
+                <input type="text" class="schoolyearinfor-input" placeholder="Nhập số điện thoại" v-model="user.PhoneNumber">
+            </div>
+            <div class="box-schoolyearinfor-top">
                 <div class="schoolyearinfor-name">Nhập mật khẩu</div>
-                <input ref="administrationcode" type="text" class="schoolyearinfor-input" placeholder="Nhập mật khẩu" v-model="administration.PassWord">
+                <input type="password" class="schoolyearinfor-input" placeholder="Nhập mật khẩu" v-model="user.Password">
+            </div>
+            <div class="box-schoolyearinfor-top">
+                <div class="schoolyearinfor-name">Chọn quyền</div>
+                <div class="box-size box-student-combobox">
+                    <input type="text" class="box-size-input box-student-input" readonly :value="user.DecentralizationName">
+                    <div class="box-select-size box-student-select" @click="clickBtnSelectDecentralization()">
+                        <div class="icon-down"></div>
+                    </div>
+                    <div class="box-size-item box-item-student type-2" v-show="isShowBoxItemDecentralization">
+                        <div v-for="decentralization in decentralizations" :key="decentralization.DecentralizationId" class="item-size item-student" @click="clickItemDecentralization(decentralization.DecentralizationId, decentralization.DecentralizationName)">{{decentralization.DecentralizationName}}</div>
+                    </div>
+                </div>
             </div>
             <div class="box-schoolyearinfor-bottom">
                 <div class="box-schoolyearinfor-cancle" @click="clickBtnCancel()">Hủy</div>
@@ -25,16 +41,21 @@
 <script>
 import axios from 'axios';
 import { eventBus } from '../../main'
-
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
             isShowAdministrationInfor: false,
             isShowBtnSaveAndInsert: true,
-            administration: {},
+            isShowBoxItemDecentralization: false,
+            decentralizations: [],
+            user: {},
             m2: null,
             formod: null,
         }
+    },
+    computed: {
+        ...mapGetters(['URLAPI']),
     },
     methods: {
        /**
@@ -62,11 +83,11 @@ export default {
             {
                 axios({
                     method: "post",
-                    url: "https://www.vnedu.somee.com/api/v1/Administrations",
-                    data: m.administration,
+                    url: `${m.URLAPI}/api/v1/Useds`,
+                    data: m.user,
                 })
                 .then(function (response) {
-                    m.administration = {};
+                    m.user = {};
                     m.m2.loadDataAdministration();
                     // gửi dữ liệu sang component FormToastMessage là 'true'
                     eventBus.$emit("isShowToastMessageWas", true);
@@ -79,18 +100,18 @@ export default {
                     // gửi dữ liệu đến component FormWaning là 'true'
                     eventBus.$emit("isShowFormWaningWas", true);
                     // gửi dữ liệu đến component FormWaning 
-                    eventBus.$emit("errorWas", error.response.data.userMsg);
+                    eventBus.$emit("errorWas", error.response.data.data.userMsg);
                 });
             }
             else if(m.formod == "edit")
             {
                 axios({
                     method: "put",
-                    url: `https://www.vnedu.somee.com/api/v1/Administrations/${m.administration.AdministrationId}`,
-                    data: m.administration,
+                    url: `${m.URLAPI}/api/v1/Useds/${m.user.UserId}`,
+                    data: m.user,
                 })
                 .then(function (response) {
-                    m.administration = {};
+                    m.user = {};
                     m.m2.loadDataAdministration();
                     // gửi dữ liệu sang component FormToastMessage là 'true'
                     eventBus.$emit("isShowToastMessageWas", true);
@@ -103,7 +124,7 @@ export default {
                     // gửi dữ liệu đến component FormWaning là 'true'
                     eventBus.$emit("isShowFormWaningWas", true);
                     // gửi dữ liệu đến component FormWaning 
-                    eventBus.$emit("errorWas", error.response.data.userMsg);
+                    eventBus.$emit("errorWas", error.response.data.data.userMsg);
                 });
             }
        },
@@ -116,11 +137,11 @@ export default {
            var m = this;
            axios({
                 method: "post",
-                url: "https://www.vnedu.somee.com/api/v1/Administrations",
-                data: m.administration,
+                url: `${m.URLAPI}/api/v1/Useds`,
+                data: m.user,
             })
             .then(function (response) {
-                m.administration = {};
+                m.user = {};
                 // gửi dữ liệu sang component FormToastMessage là 'true'
                 eventBus.$emit("isShowToastMessageWas", true);
                 // gửi dữ liệu sang component FormToastMessage là 'Thêm người dùng thành công'
@@ -133,12 +154,47 @@ export default {
                 // gửi dữ liệu đến component FormWaning là 'true'
                 eventBus.$emit("isShowFormWaningWas", true);
                 // gửi dữ liệu đến component FormWaning 
-                eventBus.$emit("errorWas", error.response.data.userMsg);
+                eventBus.$emit("errorWas", error.response.data.data.userMsg);
+            });
+       },
+       /**
+        * click vào 1 quyền
+        * CreatedBy: TTThiep(07/03/2022)
+        */
+        clickItemDecentralization(decentralizationId, decentralizationName){
+            this.user.DecentralizationId = decentralizationId;
+            this.user.DecentralizationName = decentralizationName;
+            this.isShowBoxItemDecentralization = !this.isShowBoxItemDecentralization;
+        },
+        /**
+        * click Btn lựa chọn quyền
+        * CreatedBy: TTThiep(07/03/2022)
+        */
+        clickBtnSelectDecentralization(){
+            this.isShowBoxItemDecentralization = !this.isShowBoxItemDecentralization;
+        },
+        /**
+        * lấy tất cả quyền
+        * CreatedBy: TTThiep(07/03/2022)
+        */
+        loadDataDecentralization(){
+           var m = this;
+            axios
+            .get(`${m.URLAPI}/api/v1/Decentralizations`)
+            .then(function(response){
+                if(response && response.data)
+                {
+                    m.decentralizations = response.data;
+                }
+            })
+            .catch(function(res){
+                console.log(res);
             });
        }
     },
     created() {
         var  m = this;
+        m.loadDataDecentralization();
         eventBus.$on("isShowAdministrationInforWas", (isShowAdministrationInforData) =>{
             m.isShowAdministrationInfor = isShowAdministrationInforData;
         });
@@ -151,8 +207,8 @@ export default {
         eventBus.$on("formodWas", (formodData) =>{
             m.formod = formodData;
         });
-        eventBus.$on("administrationWas", (administrationData) =>{
-            m.administration = administrationData;
+        eventBus.$on("administrationWas", (userData) =>{
+            m.user = userData;
         });
     },
 }

@@ -2,8 +2,8 @@
     <div class="t-overview">
        <div class="box-overview grade">
            <div class="box-name-overview">
-               <div class="header-name-overview">{{grades.length}}</div>
-               <div class="bottom-name-overview"> Khối</div>
+               <div class="header-name-overview">{{schoolyears.length}}</div>
+               <div class="bottom-name-overview">Năm học</div>
            </div>
            <div class="box-icon-overview"></div>
        </div>
@@ -33,28 +33,32 @@
 
 <script>
 import axios from 'axios'
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
-            grades: [],
+            schoolyears: [],
             classs: [],
             students: [],
             subjects: [],
         }
     },
+    computed: {
+        ...mapGetters(['URLAPI']),
+    },
     methods: {
         /**
-         * lấy tất cả khối
+         * lấy tất cả năm học
          * CreatedBy: TTThiep(26/01/2022)
          */
-        LoadDataGrades(){
+        LoadDataSchoolYears(){
             var m = this;
             axios
-            .get('https://www.vnedu.somee.com/api/v1/Grades')
+            .get(`${m.URLAPI}/api/v1/SchoolYears`)
             .then(function (response){
                 if(response && response.data)
                 { 
-                   m.grades = response.data;
+                   m.schoolyears = response.data;
                 }
             })
             .catch(function (res){
@@ -68,7 +72,7 @@ export default {
         LoadDataClasss(){
             var m = this;
             axios
-            .get('https://www.vnedu.somee.com/api/v1/Classs')
+            .get(`${m.URLAPI}/api/v1/Classs`)
             .then(function (response){
                 if(response && response.data)
                 { 
@@ -86,7 +90,7 @@ export default {
         LoadDataStudents(){
             var m = this;
             axios
-            .get('https://www.vnedu.somee.com/api/v1/Students')
+            .get(`${m.URLAPI}/api/v1/Students`)
             .then(function (response){
                 if(response && response.data)
                 { 
@@ -104,7 +108,7 @@ export default {
         LoadDataSubjects(){
             var m = this;
             axios
-            .get('https://www.vnedu.somee.com/api/v1/Subjects')
+            .get(`${m.URLAPI}/api/v1/Subjects`)
             .then(function (response){
                 if(response && response.data)
                 { 
@@ -118,7 +122,7 @@ export default {
     },
     created() {
         var m = this;
-        m.LoadDataGrades();
+        m.LoadDataSchoolYears();
         m.LoadDataClasss();
         m.LoadDataStudents();
         m.LoadDataSubjects();

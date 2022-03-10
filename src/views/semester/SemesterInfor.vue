@@ -21,7 +21,7 @@
 <script>
 import axios from 'axios';
 import { eventBus } from '../../main'
-
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
@@ -31,6 +31,9 @@ export default {
             m2: null,
             formod: null,
         }
+    },
+    computed: {
+        ...mapGetters(['user', 'URLAPI']),
     },
     methods: {
        /**
@@ -56,9 +59,10 @@ export default {
             var m = this;
             if(m.formod == "add")
             {
+                m.semester.CreatedBy = m.user.UserName;
                 axios({
                     method: "post",
-                    url: "https://www.vnedu.somee.com/api/v1/Semesters",
+                    url: `${m.URLAPI}/api/v1/Semesters`,
                     data: m.semester,
                 })
                 .then(function (response) {
@@ -75,14 +79,15 @@ export default {
                     // gửi dữ liệu đến component FormWaning là 'true'
                     eventBus.$emit("isShowFormWaningWas", true);
                     // gửi dữ liệu đến component FormWaning 
-                    eventBus.$emit("errorWas", error.response.data.userMsg);
+                    eventBus.$emit("errorWas", error.response.data.data.userMsg);
                 });
             }
             else if(m.formod == "edit")
             {
+                m.semester.ModifiedBy = m.user.UserName;
                 axios({
                     method: "put",
-                    url: `https://www.vnedu.somee.com/api/v1/Semesters/${m.semester.SemesterId}`,
+                    url: `${m.URLAPI}/api/v1/Semesters/${m.semester.SemesterId}`,
                     data: m.semester,
                 })
                 .then(function (response) {
@@ -99,7 +104,7 @@ export default {
                     // gửi dữ liệu đến component FormWaning là 'true'
                     eventBus.$emit("isShowFormWaningWas", true);
                     // gửi dữ liệu đến component FormWaning 
-                    eventBus.$emit("errorWas", error.response.data.userMsg);
+                    eventBus.$emit("errorWas", error.response.data.data.userMsg);
                 });
             }
        },
@@ -109,10 +114,11 @@ export default {
         */
        clickBtnSaveAndInsert()
        {
-           var m = this;
-           axios({
+            var m = this;
+            m.semester.CreatedBy = m.user.UserName;
+            axios({
                 method: "post",
-                url: "https://www.vnedu.somee.com/api/v1/Semesters",
+                url: `${m.URLAPI}/api/v1/Semesters`,
                 data: m.semester,
             })
             .then(function (response) {
@@ -129,7 +135,7 @@ export default {
                 // gửi dữ liệu đến component FormWaning là 'true'
                 eventBus.$emit("isShowFormWaningWas", true);
                 // gửi dữ liệu đến component FormWaning 
-                eventBus.$emit("errorWas", error.response.data.userMsg);
+                eventBus.$emit("errorWas", error.response.data.data.userMsg);
             });
        }
     },

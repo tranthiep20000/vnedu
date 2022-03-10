@@ -88,7 +88,7 @@
 
 .box-option-general {
     position: fixed;
-    width: 200px;
+    width: 220px;
     left: 200px;
     top: 88px;
     background-color: #393A3D;
@@ -113,7 +113,7 @@
     height: 16px;
     margin-right: 16px;
     background-image: url(../../assets/icon.svg);
-    background-position: -1368px -360px;
+    background-position: -896px -360px;
 }
 
 .router-link-active>.bottom {

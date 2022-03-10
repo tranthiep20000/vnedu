@@ -10,39 +10,36 @@
             <input ref="fullname" id="fullname" class="input-changepassword" type="text" readonly :value="student.FullName">
         </div>
         <div class="box-input-changepassword">
-            <div class="name-changepassword">Ngày sinh</div>
-            <input id="phonenumber" class="input-changepassword" type="text" readonly :value="FomatDate(student.DateOfBirth)">
-        </div>
-        <div class="box-input-changepassword">
             <div class="name-changepassword">Giới tính</div>
             <input id="phonenumber" class="input-changepassword" type="text" readonly :value="fomatGender(student.Gender)">
+        </div>
+        <div class="box-input-changepassword">
+            <div class="name-changepassword">Ngày sinh</div>
+            <input id="phonenumber" class="input-changepassword" type="text" readonly :value="FomatDate(student.DateOfBirth)">
         </div>
         <div class="box-input-changepassword">
             <div class="name-changepassword">Số điện thoại</div>
             <input id="phonenumber" class="input-changepassword" type="text" readonly :value="student.PhoneNumber">
         </div>
         <div class="box-input-changepassword">
-            <div class="name-changepassword">Khối</div>
-            <input id="phonenumber" class="input-changepassword" type="text" readonly :value="student.GradeName">
-        </div>
-        <div class="box-input-changepassword">
-            <div class="name-changepassword">Lớp</div>
-            <input id="phonenumber" class="input-changepassword" type="text" readonly :value="student.ClassName">
+            <div class="name-changepassword">Địa chỉ</div>
+            <input id="phonenumber" class="input-changepassword" type="text" readonly :value="student.Address">
         </div>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
 import { mapGetters } from 'vuex';
 import moment from 'moment';
 export default {
     data() {
         return {
-          
+            student: {}
         }
     },
     computed:{
-        ...mapGetters(['student']),
+        ...mapGetters(['user', 'URLAPI']),
     },
     methods: {
          /**
@@ -76,7 +73,31 @@ export default {
                 return moment(String(value)).format('DD-MM-YYYY');
             }
         },
+
+        /**
+         * Lấy thông tin của một student
+         * CreatedBy: TTThiep (07/03/2022)
+         */
+        LoadDataInformationStudent()
+        {
+            var m = this;
+            axios
+            .get(`${m.URLAPI}/api/v1/Students/GetInformationByPhonenumber?PhoneNumber=${m.user.PhoneNumber}`)
+            .then(function (response){
+                if(response && response.data)
+                { 
+                   m.student = response.data;
+                }
+            })
+            .catch(function (res){
+                console.log(res);
+            });
+        }
     },
+    created() {
+        var m = this;
+        m.LoadDataInformationStudent();
+    }
 
 }
 </script>

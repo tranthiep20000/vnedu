@@ -42,10 +42,10 @@ export default {
         }
     },
     computed:{
-        ...mapGetters(['student']),
+        ...mapGetters(['user', 'URLAPI']),
     },
     methods: {
-        ...mapMutations(['setStudent']),
+        ...mapMutations(['setUser']),
         /**
          * click vào btn con mắt
          * CreatedBy: TTThiep(11/01/2022)
@@ -90,11 +90,11 @@ export default {
             else
             {
                 axios
-                .get(`https://www.vnedu.somee.com/api/v1/Students/getStudentByPhoneNumberAndPassword?PhoneNumber=${m.phoneNumber}&PassWord=${m.passWord}`)
+                .get(`${m.URLAPI}/api/v1/Useds/GetByPhoneNumberPassword?PhoneNumber=${m.phoneNumber}&Password=${m.passWord}`)
                 .then(function (response){
                     if(response && response.data)
                     { 
-                        m.setStudent(response.data);
+                        m.setUser(response.data);
                         // chuyển đến trang main
                         m.$router.push({ path: "/main" });
                     }

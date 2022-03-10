@@ -11,28 +11,6 @@
                     <div class="icon-search"></div>
                 </div>
             </div>
-            <div class="box-left-filter">
-                <div class="box-size">
-                    <input type="text" class="box-size-input" readonly :value="classname" placeholder="Chọn lớp để xem">
-                    <div class="box-select-size" @click="clickBtnSelectClass()">
-                        <div class="icon-filter"></div>
-                    </div>
-                    <div class="box-size-item box-filter-item filter-class" v-show="isShowBoxItemClass">
-                        <div class="item-size" @click="clickItemClassAll()">Tất cả lớp học</div>
-                        <div v-for="class1 in classs" :key="class1.ClassId" class="item-size" @click="clickItemClass(class1.ClassName)">{{class1.ClassName}}</div>
-                    </div>
-                </div>
-                <div class="box-size">
-                    <input type="text" class="box-size-input" readonly :value="gradename" placeholder="Chọn khối để xem">
-                    <div class="box-select-size" @click="clickBtnSelectGrade()">
-                        <div class="icon-filter"></div>
-                    </div>
-                    <div class="box-size-item box-filter-item" v-show="isShowBoxItemGrade">
-                        <div class="item-size" @click="clickItemGradeAll()">Tất cả khối học</div>
-                        <div v-for="grade in grades" :key="grade.GradeId" class="item-size" @click="clickItemGrade(grade.GradeName)">{{grade.GradeName}}</div>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="between-schoolyear table-user">
             <table class="m-table" border="1">
@@ -44,10 +22,7 @@
                         <th class="text-align-center" style="width: 80px">Giới tính</th>
                         <th class="text-align-center" style="width: 90px">Ngày sinh</th>
                         <th class="text-align-center" style="width: 110px">Số điện thoại</th>
-                        <th class="text-align-left" >Mật khẩu</th>
-                        <th class="text-align-center" style="width: 80px">Tên khối</th>
-                        <th class="text-align-center" style="width: 80px">Tên lớp</th>
-                        <th class="text-align-center" style="width: 90px">Tên quyền</th>
+                        <th class="text-align-left" >Địa chỉ</th>
                         <th class="text-align-center" style="width: 120px">Chức năng</th>
                     </tr>
                 </thead>
@@ -59,10 +34,7 @@
                         <th class="text-align-center">{{FomatGender(student.Gender)}}</th>
                         <th class="text-align-center">{{FomatDate(student.DateOfBirth)}}</th>
                         <th class="text-align-center">{{student.PhoneNumber}}</th>
-                        <th class="text-align-left">{{fomatPassword(student.PassWord)}}</th>
-                        <th class="text-align-center">{{student.GradeName}}</th>
-                        <th class="text-align-center">{{student.ClassName}}</th>
-                        <th class="text-align-center">{{student.DecentralizationName}}</th>
+                        <th class="text-align-left">{{student.Address}}</th>
                         <th class="text-align-center">
                             <div class="box-function">
                                 <div class="btn-edit" @click="clickBtnEdit(student.StudentId)"></div>
@@ -96,6 +68,7 @@ import { eventBus } from '../../main'
 import StudentInfor from './StudentInfor.vue'
 import DeleteStudent from './DeleteStudent.vue'
 import moment from 'moment';
+import { mapGetters } from 'vuex';
 export default {
   components: { StudentInfor, DeleteStudent },
 
@@ -134,18 +107,10 @@ export default {
             classname: null,
         }
     },
+    computed:{
+        ...mapGetters(['URLAPI']),
+    },
     methods: {
-        /**
-         * Định dạng lại mật khẩu 
-         * CreatedBy: TTThiep (11/02/2022)
-         */
-        fomatPassword(value){
-            if (value){
-                var tmp = "", len = value.length;
-                for (var i = 1; i <= len; i++) tmp += '*';
-                return tmp;
-            }
-        },
         /**
          * Định dạng lại ngày sinh để hiển thị 
          * CreatedBy: TTThiep (09/02/2022)
@@ -181,20 +146,6 @@ export default {
          * click vào btn hiện box size
          * CreatedBy: TTThiep(08/02/2022)
          */
-        clickBtnSelectGrade(){
-            this.isShowBoxItemGrade = !this.isShowBoxItemGrade;
-        },
-        /**
-         * click vào btn hiện box size
-         * CreatedBy: TTThiep(08/02/2022)
-         */
-        clickBtnSelectClass(){
-            this.isShowBoxItemClass = !this.isShowBoxItemClass;
-        },
-        /**
-         * click vào btn hiện box size
-         * CreatedBy: TTThiep(08/02/2022)
-         */
         clickBtnSelectSize(){
             this.isShowBoxItemSize = !this.isShowBoxItemSize;
         },
@@ -205,38 +156,6 @@ export default {
         clickItemSize(name){
             this.isShowBoxItemSize = !this.isShowBoxItemSize;
             this.pagename = name;
-        },
-        /**
-         * click vào chọn số bản ghi trên 1 trang
-         * CreatedBy: TTThiep(08/02/2022)
-         */
-        clickItemClass(className){
-            this.isShowBoxItemClass = !this.isShowBoxItemClass;
-            this.classname = className;
-        },
-        /**
-         * click vào chọn số bản ghi trên 1 trang
-         * CreatedBy: TTThiep(08/02/2022)
-         */
-        clickItemGrade(gradeName){
-            this.isShowBoxItemGrade = !this.isShowBoxItemGrade;
-            this.gradename = gradeName;
-        },
-        /**
-         * click vào chọn số bản ghi trên 1 trang
-         * CreatedBy: TTThiep(08/02/2022)
-         */
-        clickItemGradeAll(){
-            this.isShowBoxItemGrade = !this.isShowBoxItemGrade;
-            this.gradename = "Tất cả khối học";
-        },
-        /**
-         * click vào chọn số bản ghi trên 1 trang
-         * CreatedBy: TTThiep(08/02/2022)
-         */
-        clickItemClassAll(){
-            this.isShowBoxItemClass = !this.isShowBoxItemClass;
-            this.classname = "Tất cả lớp học";
         },
         /**
          * click vào btn thêm mới người dùng
@@ -258,7 +177,7 @@ export default {
         loadDataStudent(){
             var m = this;
             axios
-            .get('https://www.vnedu.somee.com/api/v1/Students')
+            .get(`${m.URLAPI}/api/v1/Students`)
             .then(function(response){
                 if(response && response.data)
                 {
@@ -270,48 +189,13 @@ export default {
             });
         },
         /**
-         * Lấy tất cả khối học
-         * CreatedBy: TTThiep(08/02/2022)
-         */
-        loadDataGrade(){
-            var m = this;
-            axios
-            .get('https://www.vnedu.somee.com/api/v1/Grades')
-            .then(function(response){
-                if(response && response.data)
-                {
-                    m.grades = response.data;
-                }
-            })
-            .catch(function(res){
-                console.log(res);
-            });
-        },
-        /**
-         * Lấy tất cả lớp học
-         * CreatedBy: TTThiep(08/02/2022)
-         */
-        loadDataClass(){
-            var m = this;
-            axios
-            .get('https://www.vnedu.somee.com/api/v1/Classs')
-            .then(function(response){
-                if(response && response.data)
-                {
-                    m.classs = response.data;
-                }
-            })
-            .catch(function(res){
-                console.log(res);
-            });
-        },
-        /**
          * click btn sửa
          * CreatedBy: TTThiep(08/02/2022)
          */
         clickBtnEdit(studentId){
+            var m = this;
             axios
-            .get(`https://www.vnedu.somee.com/api/v1/Students/${studentId}`)
+            .get(`${m.URLAPI}/api/v1/Students/${studentId}`)
             .then(function (response){
                 if(response && response.data)
                 { 
@@ -325,8 +209,6 @@ export default {
             eventBus.$emit("isShowBtnSaveAndInsertWas", false);
             eventBus.$emit('formodWas', "edit");
             eventBus.$emit('thisWas', this);
-            this.loadDataGrade();
-            this.loadDataClass();
         },
         /**
          * click btn xóa
@@ -342,8 +224,6 @@ export default {
     created() {
         var m = this;
         m.loadDataStudent();
-        m.loadDataGrade();
-        m.loadDataClass();
     },
     
 }

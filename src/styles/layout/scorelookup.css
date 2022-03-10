@@ -5,6 +5,7 @@
 }
 
 .header-scorelookup {
+    height: 108px;
     margin: 16px;
     box-sizing: border-box;
     background-color: #fff;
@@ -163,4 +164,24 @@ tr {
     100% {
         opacity: 1;
     }
+}
+
+.box-scorelookup {
+    flex-direction: row;
+}
+
+.header-scorelookup {
+    width: unset;
+}
+
+.name-combobox {
+    margin-right: 8px;
+}
+
+.combobox-scorelookup {
+    margin: 0px 8px;
+}
+
+.flex-combobox {
+    flex-direction: column;
 }

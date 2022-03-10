@@ -39,6 +39,7 @@ import axios from 'axios'
 import { eventBus } from '../../main'
 import SemesterInfor from './SemesterInfor.vue'
 import DeleteSemester from './DeleteSemester.vue'
+import { mapGetters } from 'vuex'
 export default {
     components: {
         DeleteSemester, SemesterInfor
@@ -47,6 +48,9 @@ export default {
         return {
             semesters: [],
         }
+    },
+    computed: {
+        ...mapGetters(['user', 'URLAPI']),
     },
     methods: {
         /**
@@ -67,7 +71,7 @@ export default {
         loadDataSemester(){
             var m = this;
             axios
-            .get('https://www.vnedu.somee.com/api/v1/Semesters')
+            .get(`${m.URLAPI}/api/v1/Semesters`)
             .then(function(response){
                 if(response && response.data)
                 {
@@ -83,8 +87,9 @@ export default {
          * CreatedBy: TTThiep(28/01/2022)
          */
         clickBtnEdit(semesterId){
+            var m = this;
             axios
-            .get(`https://www.vnedu.somee.com/api/v1/Semesters/${semesterId}`)
+            .get(`${m.URLAPI}/api/v1/Semesters/${semesterId}`)
             .then(function (response){
                 if(response && response.data)
                 { 

@@ -4,7 +4,7 @@
             <div class="top-logo"></div>
             <div class="top-name"> <span style="color: #5293C7;">vn</span><span style="color:#F2852A">Edu</span></div>
         </div>
-        <div class="menu-bottom" >
+        <div v-if="user.DecentralizationId == 3" class="menu-bottom" >
             <router-link style="text-decoration: none;" to="/overview">
                 <div class="bottom">
                     <div class="bottom-logo dashboard"></div>
@@ -37,14 +37,14 @@
             </router-link>
         </div>
 
-        <div class="menu-bottom" style="display: none;">
+        <div v-else class="menu-bottom">
             <router-link style="text-decoration: none;" to="/overview">
                 <div class="bottom">
                     <div class="bottom-logo dashboard"></div>
                     <div class="bottom-name">Tổng quan</div>
                 </div>
             </router-link>
-            <div class="bottom">
+            <div class="bottom" v-if="user.DecentralizationId == 1">
                 <div class="box-menu-bottom" @click="clickBtnGeneral()">
                     <div class="box-left">
                         <div class="bottom-logo general-management"></div>
@@ -64,12 +64,6 @@
                                 <div class="bottom-name">Quản lý học kì</div>
                             </div>
                         </router-link>
-                        <router-link style="text-decoration: none;" to="/grade">
-                            <div class="bottom">
-                                <div class="bottom-logo general-management"></div>
-                                <div class="bottom-name">Quản lý khối học</div>
-                            </div>
-                        </router-link>
                         <router-link style="text-decoration: none;" to="/class">
                             <div class="bottom">
                                 <div class="bottom-logo general-management"></div>
@@ -82,6 +76,18 @@
                                 <div class="bottom-name">Quản lý môn học</div>
                             </div>
                         </router-link>
+                        <router-link style="text-decoration: none;" to="/studentclass">
+                            <div class="bottom">
+                                <div class="bottom-logo general-management"></div>
+                                <div class="bottom-name">Phân lớp học cho học sinh</div>
+                            </div>
+                        </router-link>
+                        <router-link style="text-decoration: none;" to="/studentsubject">
+                            <div class="bottom">
+                                <div class="bottom-logo general-management"></div>
+                                <div class="bottom-name">Phân môn học cho học sinh</div>
+                            </div>
+                        </router-link>
                         <router-link style="text-decoration: none;" to="/decentralization">
                             <div class="bottom">
                                 <div class="bottom-logo general-management" ></div>
@@ -91,19 +97,19 @@
                     </div>
                 </div>
             </div>
-            <router-link style="text-decoration: none;" to="/user">
+            <router-link v-if="user.DecentralizationId == 1" style="text-decoration: none;" to="/user">
                 <div class="bottom">
                     <div class="bottom-logo student-information"></div>
                     <div class="bottom-name">Quản lý người dùng</div>
                 </div>
             </router-link>
-            <router-link style="text-decoration: none;" to="/student">
+            <router-link v-if="user.DecentralizationId == 1" style="text-decoration: none;" to="/student">
                 <div class="bottom">
                     <div class="bottom-logo student-information"></div>
                     <div class="bottom-name">Quản lý học sinh</div>
                 </div>
             </router-link>
-            <router-link style="text-decoration: none;" to="/">
+            <router-link style="text-decoration: none;" to="/detailedtablescore">
                 <div class="bottom">
                     <div class="bottom-logo point-lookup"></div>
                     <div class="bottom-name">Quản lý điểm</div>
@@ -126,11 +132,15 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
             isShowBoxOptionGeneral: false,
         }
+    },
+    computed: {
+        ...mapGetters(['user']),
     },
     methods: {
         /**

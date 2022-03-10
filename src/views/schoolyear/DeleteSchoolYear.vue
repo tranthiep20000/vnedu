@@ -15,6 +15,7 @@
 <script>
 import axios from 'axios';
 import { eventBus } from '../../main'
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
@@ -23,6 +24,9 @@ export default {
             titleName: null,
             m2: null,
         }
+    },
+    computed: {
+        ...mapGetters(['URLAPI']),
     },
     methods: {
         /**
@@ -39,7 +43,7 @@ export default {
         clickBtnYes(){
             var m = this;
             axios
-            .delete(`https://www.vnedu.somee.com/api/v1/SchoolYears/${m.schoolyearId}`)
+            .delete(`${m.URLAPI}/api/v1/SchoolYears/${m.schoolyearId}`)
             .then(function(response){
                 console.log(response);
                 // gửi dữ liệu sang component FormToastMessage là 'true'

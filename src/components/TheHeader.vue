@@ -1,8 +1,8 @@
 <template>
     <div class="t-header">
         <div class="box-header">
-            <div class="box-header-name">{{student.FullName}}</div>
-            <div class="box-name-permission">{{student.DecentralizationName}}</div>
+            <div class="box-header-name">{{user.UserName}}</div>
+            <div class="box-name-permission">{{user.DecentralizationName}}</div>
         </div>
     </div>
 </template>
@@ -20,7 +20,7 @@ export default {
         
     },
     computed: {
-        ...mapGetters(['student']),
+        ...mapGetters(['user']),
     },
    
 }

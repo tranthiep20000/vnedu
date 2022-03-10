@@ -1,5 +1,5 @@
 <template>
-    <div class="t-dialog" v-show="isShowDeleteGrade">
+    <div class="t-dialog" v-show="isShowDeleteStudentClass">
         <div class="m-form">
             <div class="form-title">
                 <div class="title-icon"></div>
@@ -15,14 +15,21 @@
 <script>
 import axios from 'axios';
 import { eventBus } from '../../main'
+import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
-            isShowDeleteGrade: false,
-            gradeId: null,
+            isShowDeleteStudentClass: false,
+            studentId: null,
+            classId: null,
+            schoolyearId: null,
+            semesterId: null,
             titleName: null,
             m2: null,
         }
+    },
+    computed:{
+        ...mapGetters(['URLAPI']),
     },
     methods: {
         /**
@@ -30,7 +37,7 @@ export default {
          * CreatedBy: TTThiep(28/01/2022)
          */
         clickBtnNo(){
-            this.isShowDeleteGrade = !this.isShowDeleteGrade;
+            this.isShowDeleteStudentClass = !this.isShowDeleteStudentClass;
         },
         /**
          * click Btn có
@@ -39,15 +46,15 @@ export default {
         clickBtnYes(){
             var m = this;
             axios
-            .delete(`https://www.vnedu.somee.com/api/v1/Grades/${m.gradeId}`)
+            .delete(`${m.URLAPI}/api/v1/Student_Classs/DeleteStudent_Class?StudentId=${m.studentId}&ClassId=${m.classId}&SemesterId=${m.semesterId}&SchoolYearId=${m.schoolyearId}`)
             .then(function(response){
                 console.log(response);
                 // gửi dữ liệu sang component FormToastMessage là 'true'
                 eventBus.$emit("isShowToastMessageWas", true);
-                // gửi dữ liệu sang component FormToastMessage là 'xóa khối học thành công'
-                eventBus.$emit("TitleToastMessageWas", "Xóa khối học thành công");
-                m.m2.loadDataGrade();
-                m.isShowDeleteGrade = !m.isShowDeleteGrade;
+                // gửi dữ liệu sang component FormToastMessage là 'xóa học sinh thành công'
+                eventBus.$emit("TitleToastMessageWas", "Xóa học sinh thành công");
+                m.m2.loadDataStudent_Class();
+                m.isShowDeleteStudentClass = !m.isShowDeleteStudentClass;
             })
             .catch(function(res){
                 console.log(res);
@@ -56,17 +63,26 @@ export default {
     },
     created() {
         var  m = this;
-        eventBus.$on("isShowDeleteGradeWas", (isShowDeleteGradeData) =>{
-            m.isShowDeleteGrade = isShowDeleteGradeData;
+        eventBus.$on("isShowDeleteStudentClassWas", (isShowDeleteStudentClassData) =>{
+            m.isShowDeleteStudentClass = isShowDeleteStudentClassData;
         });
-        eventBus.$on("gradeIdWas", (gradeIdData) =>{
-            m.gradeId = gradeIdData;
+        eventBus.$on("studentIdWas", (studentIdData) =>{
+            m.studentId = studentIdData;
         });
         eventBus.$on("titlenameWas", (titlenameData) =>{
             m.titleName = titlenameData;
         });
         eventBus.$on("thisWas", (thisData) =>{
             m.m2 = thisData;
+        });
+         eventBus.$on("schoolyearIdWas", (schoolyearIdData) =>{
+            m.schoolyearId = schoolyearIdData;
+        });
+        eventBus.$on("semesterIdWas", (semesterIdData) =>{
+            m.semesterId = semesterIdData;
+        });
+        eventBus.$on("classIdWas", (classIdData) =>{
+            m.classId = classIdData;
         });
     },
 }

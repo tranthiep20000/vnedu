@@ -10,7 +10,7 @@
             </div>
             <div class="box-schoolyearinfor-top">
                 <div class="schoolyearinfor-name">Nhập mô tả quyền</div>
-                <input ref="subjectname" type="text" class="schoolyearinfor-input" placeholder="Nhập mô tả quyền" v-model="decentralization.DescriptionName">
+                <input ref="subjectname" type="text" class="schoolyearinfor-input" placeholder="Nhập mô tả quyền" v-model="decentralization.Description">
             </div>
             <div class="box-schoolyearinfor-bottom">
                 <div class="box-schoolyearinfor-cancle" @click="clickBtnCancel()">Hủy</div>
@@ -25,7 +25,7 @@
 <script>
 import axios from 'axios';
 import { eventBus } from '../../main'
-
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
@@ -35,6 +35,9 @@ export default {
             m2: null,
             formod: null,
         }
+    },
+    computed: {
+        ...mapGetters(['URLAPI']),
     },
     methods: {
        /**
@@ -62,7 +65,7 @@ export default {
             {
                 axios({
                     method: "post",
-                    url: "https://www.vnedu.somee.com/api/v1/Decentralizations",
+                    url: `${m.URLAPI}/api/v1/Decentralizations`,
                     data: m.decentralization,
                 })
                 .then(function (response) {
@@ -79,14 +82,14 @@ export default {
                     // gửi dữ liệu đến component FormWaning là 'true'
                     eventBus.$emit("isShowFormWaningWas", true);
                     // gửi dữ liệu đến component FormWaning 
-                    eventBus.$emit("errorWas", error.response.data.userMsg);
+                    eventBus.$emit("errorWas", error.response.data.data.userMsg);
                 });
             }
             else if(m.formod == "edit")
             {
                 axios({
                     method: "put",
-                    url: `https://www.vnedu.somee.com/api/v1/Decentralizations/${m.decentralization.DecentralizationId}`,
+                    url: `${m.URLAPI}/api/v1/Decentralizations/${m.decentralization.DecentralizationId}`,
                     data: m.decentralization,
                 })
                 .then(function (response) {
@@ -103,7 +106,7 @@ export default {
                     // gửi dữ liệu đến component FormWaning là 'true'
                     eventBus.$emit("isShowFormWaningWas", true);
                     // gửi dữ liệu đến component FormWaning 
-                    eventBus.$emit("errorWas", error.response.data.userMsg);
+                    eventBus.$emit("errorWas", error.response.data.data.userMsg);
                 });
             }
        },
@@ -116,7 +119,7 @@ export default {
            var m = this;
            axios({
                 method: "post",
-                url: "https://www.vnedu.somee.com/api/v1/Decentralizations",
+                url: `${m.URLAPI}/api/v1/Decentralizations`,
                 data: m.decentralization,
             })
             .then(function (response) {
@@ -133,7 +136,7 @@ export default {
                 // gửi dữ liệu đến component FormWaning là 'true'
                 eventBus.$emit("isShowFormWaningWas", true);
                 // gửi dữ liệu đến component FormWaning 
-                eventBus.$emit("errorWas", error.response.data.userMsg);
+                eventBus.$emit("errorWas", error.response.data.data.userMsg);
             });
        }
     },
