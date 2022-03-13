@@ -392,7 +392,7 @@ export default {
                             if(i.AvgSubject != null)
                             {
                                 m.count++;
-                                m.AvgSemeter+= i.AvgSubject;
+                                m.AvgSemeter+= parseFloat(i.AvgSubject);
                             }
                         }
 
