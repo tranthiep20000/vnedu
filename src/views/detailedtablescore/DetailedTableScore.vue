@@ -66,8 +66,8 @@
         <div class="bottom-studentclass" v-show="isShowStudentClass">
             <div class="box-search box-filter">
                 <div class="box-input-text input-student">
-                    <input type="text" class="input-text" placeholder="Tìm kiếm theo mã học sinh, tên học sinh">
-                    <div class="box-icon-search">
+                    <input type="text" class="input-text" placeholder="Tìm kiếm theo mã học sinh, tên học sinh" v-model="SearchValue">
+                    <div class="box-icon-search" @click="clickBtnSearch()">
                         <div class="icon-search"></div>
                     </div>
                 </div>
@@ -89,7 +89,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="(student_class,i) in student_classs" :key="student_class.SchoolYearId">
+                        <tr v-for="(student_class,i) in student_classs" :key="student_class.DetailedTableScoreId">
                             <th class="text-align-center">{{++i}}</th>
                             <th class="text-align-left">{{student_class.StudentCode}}</th>
                             <th class="text-align-left">{{student_class.FullName}}</th>
@@ -111,14 +111,24 @@
             </div>
             <div class="bottom-schoolyear box-type-paging paging-student-class">
                 <div class="box-sum">Tổng số: {{student_classs.length}} bản ghi</div>
-                <div class="box-paging"></div>
+                <div class="box-paging">
+                    <div class="pri" @click="clickPagePri()">
+                        <div class="page-pri"></div>
+                    </div>
+                    <div class="page-number">
+                        <div v-for="i in pagings" :key="i" :class="{ active: pageNumber == i }" class="number" @click="clickPageNumber(i)" >{{i}}</div>
+                    </div>
+                    <div class="next" @click="clickPageNext()">
+                        <div class="page-next" ></div>
+                    </div>
+                </div>
                 <div class="box-size">
                     <input type="text" class="box-size-input" readonly :value="pagename">
                     <div class="box-select-size" @click="clickBtnSelectSize()">
                         <div class="icon-size"></div>
                     </div>
                     <div class="box-size-item" v-show="isShowBoxItemSize">
-                        <div v-for="page in pages" :key="page.index" class="item-size" @click="clickItemSize(page.name)">{{page.name}}</div>
+                        <div v-for="page in pages" :key="page.index" class="item-size" @click="clickItemSize(page.index, page.name)">{{page.name}}</div>
                     </div>
                 </div>
             </div>
@@ -164,8 +174,6 @@ export default {
             student_classs: [
 
             ],
-            isShowLoading: false,
-            isShowScore: false,
             pages: [
                 {
                     index: 10,
@@ -188,14 +196,70 @@ export default {
                     name: "100 bản ghi trên 1 trang"
                 }
             ],
+            SearchValue: '',
+            pageSize: 10, 
+            pageNumber: 1,
+            totalRecord: null,
+            totalPage: null,
             pagename: "10 bản ghi trên 1 trang",
         }
     },
 
     computed:{
         ...mapGetters(['URLAPI']),
+        pagings() {
+            let numShown = 5;
+            numShown = Math.min(numShown, this.totalPage);
+            let first = this.pageNumber - Math.floor(numShown / 2);
+            first = Math.max(first, 1);
+            first = Math.min(first, this.totalPage - numShown + 1);
+            return [...Array(numShown)].map((k,i) => i + first);
+        }
     },
     methods: {
+        clickPageNumber(i){
+            var m = this;
+            m.pageNumber = i;
+            m.loadDataScore();
+        },
+        clickPageNext(){
+            var m = this;
+            if(m.pageNumber < m.totalPage)
+            {
+                m.pageNumber++;
+                m.loadDataScore();
+                console.log(m.pageNumber);
+            }
+            else
+            {
+                eventBus.$emit("isShowFormWaningWas", true);
+                eventBus.$emit("errorWas", "Đã đến trang cuối cùng");
+            }
+        },
+        clickPagePri(){
+            var m = this;
+            if(m.pageNumber > 1)
+            {
+                m.pageNumber--;
+                m.loadDataScore();
+                console.log(m.pageNumber);
+            }
+            else
+            {
+                eventBus.$emit("isShowFormWaningWas", true);
+                eventBus.$emit("errorWas", "Đã đến trang đầu tiên");
+            }
+        },
+        /**
+         * click vào btn tìm kiếm 
+         * CreatedBy: TTThiep (04/01/2022)
+         */
+        clickBtnSearch(){
+            this.pageNumber = 1;
+            this.loadDataScore();
+            eventBus.$emit("isShowToastMessageWas", true);
+            eventBus.$emit("TitleToastMessageWas", "Tìm kiếm học sinh thành công");
+        },
         /**
          * Định dạng lại ngày sinh để hiển thị 
          * CreatedBy: TTThiep (09/02/2022)
@@ -239,9 +303,11 @@ export default {
          * click vào chọn số bản ghi trên 1 trang
          * CreatedBy: TTThiep(08/02/2022)
          */
-        clickItemSize(name){
-            this.isShowBoxItemSize = !this.isShowBoxItemSize;
+        clickItemSize(index, name){
+            this.pageSize = index;
             this.pagename = name;
+            this.loadDataScore();
+            this.isShowBoxItemSize = false;
         },
         /**
          * click vào btn down gender
@@ -449,12 +515,15 @@ export default {
             }
             else{
                 m.isShowStudentClass = true;
+                m.pageNumber = 1;
                 axios
-                .get(`${m.URLAPI}/api/v1/Student_Subjects/GetScoreBySubject?SchoolYearId=${m.schoolyearId}&SemesterId=${m.semesterId}&SubjectId=${m.subjectId}&ClassId=${m.classId}`)
+                .get(`${m.URLAPI}/api/v1/Student_Subjects/GetPagingStudentClassBySchoolYearSemesterSubjectClass?SchoolYearId=${m.schoolyearId}&SemesterId=${m.semesterId}&SubjectId=${m.subjectId}&ClassId=${m.classId}&ValueFilter=${m.SearchValue}&PageIndex=${m.pageNumber}&PageSize=${m.pageSize}`)
                 .then(function (response){
-                    if(response && response.data)
+                    if(response && response.data.Data)
                     {
-                        m.student_classs = response.data;
+                        m.student_classs = response.data.Data;
+                        m.totalRecord = response.data.TotalRecord;
+                        m.totalPage = response.data.TotalPage;
                         eventBus.$emit("isShowToastMessageWas", true);
                         eventBus.$emit("TitleToastMessageWas", "Xem thành công");
                     }
@@ -467,11 +536,13 @@ export default {
         loadDataScore(){
             var m = this;
             axios
-            .get(`${m.URLAPI}/api/v1/Student_Subjects/GetScoreBySubject?SchoolYearId=${m.schoolyearId}&SemesterId=${m.semesterId}&SubjectId=${m.subjectId}&ClassId=${m.classId}`)
+            .get(`${m.URLAPI}/api/v1/Student_Subjects/GetPagingStudentClassBySchoolYearSemesterSubjectClass?SchoolYearId=${m.schoolyearId}&SemesterId=${m.semesterId}&SubjectId=${m.subjectId}&ClassId=${m.classId}&ValueFilter=${m.SearchValue}&PageIndex=${m.pageNumber}&PageSize=${m.pageSize}`)
             .then(function (response){
-                if(response && response.data)
+                if(response && response.data.Data)
                 {
-                    m.student_classs = response.data;
+                    m.student_classs = response.data.Data;
+                    m.totalRecord = response.data.TotalRecord;
+                    m.totalPage = response.data.TotalPage;
                 }
             })
             .catch(function (res){

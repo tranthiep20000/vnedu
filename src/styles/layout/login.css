@@ -133,3 +133,13 @@
         opacity: 1;
     }
 }
+
+@media only screen and (max-width: 46.1875em) {
+    .box-login {
+        width: 90%;
+        height: 400px;
+    }
+    .box-input {
+        width: 90%;
+    }
+}

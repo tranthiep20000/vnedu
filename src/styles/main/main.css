@@ -17,6 +17,7 @@
 @import url(../layout/student.css);
 @import url(../layout/studentinfor.css);
 @import url(../layout/studentclass.css);
+@import url(../layout/paging.css);
 body {
     margin: 0px;
     font-family: notosans;

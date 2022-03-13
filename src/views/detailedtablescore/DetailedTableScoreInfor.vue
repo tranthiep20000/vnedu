@@ -5,35 +5,35 @@
                 <div class="icon-x"></div>
             </div>
             <div class="box-schoolyearinfor-top">
-                <div class="schoolyearinfor-name">Nhập điểm miệng lần 1</div>
+                <div class="schoolyearinfor-name past-2">Nhập điểm miệng lần 1</div>
                 <input ref="administrationcode" type="text" class="schoolyearinfor-input" placeholder="Nhập điểm miệng lần 1" v-model="detailedtablescore.FirstOralScore">
             </div>
             <div class="box-schoolyearinfor-top">
-                <div class="schoolyearinfor-name">Nhập điểm miệng lần 2</div>
+                <div class="schoolyearinfor-name past-2">Nhập điểm miệng lần 2</div>
                 <input ref="administrationcode" type="text" class="schoolyearinfor-input" placeholder="Nhập điểm miệng lần 2" v-model="detailedtablescore.SecondOralScore">
             </div>
             <div class="box-schoolyearinfor-top">
-                <div class="schoolyearinfor-name">Nhập điểm miệng lần 3</div>
+                <div class="schoolyearinfor-name past-2">Nhập điểm miệng lần 3</div>
                 <input ref="administrationcode" type="text" class="schoolyearinfor-input" placeholder="Nhập điểm miệng lần 3" v-model="detailedtablescore.ThirdOralScore">
             </div>
             <div class="box-schoolyearinfor-top">
-                <div class="schoolyearinfor-name">Nhập điểm 15 phút lần 1</div>
+                <div class="schoolyearinfor-name past-2">Nhập điểm 15 phút lần 1</div>
                 <input ref="administrationcode" type="text" class="schoolyearinfor-input" placeholder="Nhập điểm 15 phút lần 1" v-model="detailedtablescore.First15minutesScore">
             </div>
             <div class="box-schoolyearinfor-top">
-                <div class="schoolyearinfor-name">Nhập điểm 15 phút lần 2</div>
+                <div class="schoolyearinfor-name past-2">Nhập điểm 15 phút lần 2</div>
                 <input ref="administrationcode" type="text" class="schoolyearinfor-input" placeholder="Nhập điểm 15 phút lần 2" v-model="detailedtablescore.Second15minutesScore">
             </div>
             <div class="box-schoolyearinfor-top">
-                <div class="schoolyearinfor-name">Nhập điểm 15 phút lần 3</div>
+                <div class="schoolyearinfor-name past-2">Nhập điểm 15 phút lần 3</div>
                 <input ref="administrationcode" type="text" class="schoolyearinfor-input" placeholder="Nhập điểm 15 phút lần 3" v-model="detailedtablescore.Third15minutesScore">
             </div>
             <div class="box-schoolyearinfor-top">
-                <div class="schoolyearinfor-name">Nhập điểm 1 tiết</div>
+                <div class="schoolyearinfor-name past-2">Nhập điểm 1 tiết</div>
                 <input ref="administrationcode" type="text" class="schoolyearinfor-input" placeholder="Nhập điểm 1 tiết" v-model="detailedtablescore.OnePeriodScore">
             </div>
             <div class="box-schoolyearinfor-top">
-                <div class="schoolyearinfor-name">Nhập điểm cuối kì</div>
+                <div class="schoolyearinfor-name past-2">Nhập điểm cuối kì</div>
                 <input ref="administrationcode" type="text" class="schoolyearinfor-input" placeholder="Nhập điểm cuối kì" v-model="detailedtablescore.FinalScore">
             </div>
             <div class="box-schoolyearinfor-bottom">
@@ -82,28 +82,63 @@ export default {
        clickBtnSave()
        {
             var m = this;
-            m.detailedtablescore.ModifiedBy = m.user.UserName;
-            axios({
-                method: "put",
-                url: `${m.URLAPI}/api/v1/DetailedTableScores/${m.detailedtablescore.DetailedTableScoreId}`,
-                data: m.detailedtablescore,
-            })
-            .then(function (response) {
-                m.detailedtablescore = {};
-                m.m2.loadDataScore();
-                // gửi dữ liệu sang component FormToastMessage là 'true'
-                eventBus.$emit("isShowToastMessageWas", true);
-                // gửi dữ liệu sang component FormToastMessage là 'cập nhật điểm thành công'
-                eventBus.$emit("TitleToastMessageWas", "Cập nhật điểm thành công");
-                m.isShowDetailedTableScoreInfor = !m.isShowDetailedTableScoreInfor;
-                console.log(response);
-            })
-            .catch(function (error) {
-                // gửi dữ liệu đến component FormWaning là 'true'
-                eventBus.$emit("isShowFormWaningWas", true);
-                // gửi dữ liệu đến component FormWaning 
-                eventBus.$emit("errorWas", error.response.data.data.userMsg);
-            });
+            if(m.detailedtablescore.FirstOralScore == "")
+            {
+                m.detailedtablescore.FirstOralScore = null;
+            }
+            if(m.detailedtablescore.SecondOralScore == "")
+            {
+                m.detailedtablescore.SecondOralScore = null;
+            }
+            if(m.detailedtablescore.ThirdOralScore == "")
+            {
+                m.detailedtablescore.ThirdOralScore = null;
+            }
+            if(m.detailedtablescore.First15minutesScore == "")
+            {
+                m.detailedtablescore.First15minutesScore = null;
+            }
+            if(m.detailedtablescore.Second15minutesScore == "")
+            {
+                m.detailedtablescore.Second15minutesScore = null;
+            }
+            if(m.detailedtablescore.Third15minutesScore == "")
+            {
+                m.detailedtablescore.Third15minutesScoree = null;
+            }
+            if(m.detailedtablescore.OnePeriodScore == "")
+            {
+                m.detailedtablescore.OnePeriodScore = null;
+            }
+            if(m.detailedtablescore.FinalScore == "")
+            {
+                m.detailedtablescore.FinalScore = null;
+            }
+            else
+            {
+                m.detailedtablescore.ModifiedBy = m.user.UserName;
+                axios({
+                    method: "put",
+                    url: `${m.URLAPI}/api/v1/DetailedTableScores/${m.detailedtablescore.DetailedTableScoreId}`,
+                    data: m.detailedtablescore,
+                })
+                .then(function (response) {
+                    m.detailedtablescore = {};
+                    m.m2.loadDataScore();
+                    // gửi dữ liệu sang component FormToastMessage là 'true'
+                    eventBus.$emit("isShowToastMessageWas", true);
+                    // gửi dữ liệu sang component FormToastMessage là 'cập nhật điểm thành công'
+                    eventBus.$emit("TitleToastMessageWas", "Cập nhật điểm thành công");
+                    m.isShowDetailedTableScoreInfor = !m.isShowDetailedTableScoreInfor;
+                    console.log(response);
+                })
+                .catch(function (error) {
+                    // gửi dữ liệu đến component FormWaning là 'true'
+                    eventBus.$emit("isShowFormWaningWas", true);
+                    // gửi dữ liệu đến component FormWaning 
+                    eventBus.$emit("errorWas", error.response.data.data.userMsg);
+                }); 
+            }
        },
     },
     created() {

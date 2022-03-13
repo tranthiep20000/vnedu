@@ -56,6 +56,10 @@
     color: #488DC7;
 }
 
+.past-2 {
+    width: 160px;
+}
+
 .schoolyearinfor-input {
     width: calc(100% - 150px);
     outline: none;

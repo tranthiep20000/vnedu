@@ -274,6 +274,11 @@ export default {
                 eventBus.$emit("isShowFormWaningWas", true);
                 eventBus.$emit("errorWas", "Vui lòng chọn học kì cần xem");
             }
+            else if(m.classId == null || m.classId == "")
+            {
+                eventBus.$emit("isShowFormWaningWas", true);
+                eventBus.$emit("errorWas", "Vui lòng chọn lớp học cần xem");
+            }
             else if(m.Classs.length == 0)
             {
                 eventBus.$emit("isShowFormWaningWas", true);

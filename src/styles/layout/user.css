@@ -61,9 +61,11 @@
 .box-paging {
     height: 40px;
     width: calc(100% - 482px);
-    background-color: #ccc;
     margin: 0px 16px;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .box-size {
