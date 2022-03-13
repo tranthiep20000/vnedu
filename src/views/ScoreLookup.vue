@@ -71,15 +71,13 @@
                         <th class="text-align-center">{{score.First15minutesScore}}   {{score.Second15minutesScore}}   {{score.Third15minutesScore}}</th>
                         <th class="text-align-center">{{score.OnePeriodScore}}</th>
                         <th class="text-align-center">{{score.FinalScore}}</th>
-                        <th v-if="score.ScoreAverage == null" class="text-align-center"></th>
-                        <th v-else class="text-align-center">{{(score.ScoreAverage).toFixed(2)}}</th>
+                        <th class="text-align-center">{{score.AvgSubject}}</th>
                     </tr>
                 </tbody>
             </table>
             <div class="box-score">
                 <div class="score-name">{{titleSemester}}</div>
-                <div v-if="semesterSum == null" class="score-medium"></div>
-                <div v-else class="score-medium">{{(semesterSum/13).toFixed(2)}}</div>
+                <div class="score-medium">{{AvgSemeter}}</div>
             </div>
         </div>
     </div>
@@ -118,11 +116,15 @@ export default {
             scores: [
 
             ],
-            semesterSum: 0,
             isShowLoading: false,
             isShowScore: false,
             titleSemester: null,
             student: {},
+            AvgOralScore: null,
+            Avg15minutesScore: null,
+            AvgSubject: null,
+            count: 0,
+            AvgSemeter: 0,
         }
     },
 
@@ -292,7 +294,6 @@ export default {
                 .then(function (response){
                     if(response && response.data)
                     { 
-
                         m.semesterSum = 0;
                         m.scores = response.data;
                         if(m.semesterId == 4)
@@ -304,16 +305,106 @@ export default {
                             m.titleSemester = "TRUNG BÌNH HỌC KÌ II";
                         }
                         for (const i of m.scores) {
-                            if(i.ScoreFinal == null)
+                            // tính điểm trung bình miệng
+                            if(i.FirstOralScore != null && i.SecondOralScore != null && i.ThirdOralScore == null)
                             {
-                                m.semesterSum = null;
-                                break;
+                                m.AvgOralScore = (((i.FirstOralScore) + (i.SecondOralScore)) / 2).toFixed(2);
+                            }
+                            else if(i.FirstOralScore != null && i.SecondOralScore == null && i.ThirdOralScore != null)
+                            {
+                                m.AvgOralScore = (((i.FirstOralScore) + (i.ThirdOralScore)) / 2).toFixed(2);
+                            }
+                            else if(i.FirstOralScore == null && i.SecondOralScore != null &&i.ThirdOralScore != null)
+                            {
+                                m.AvgOralScore = (((i.SecondOralScore) + (i.ThirdOralScore)) / 2).toFixed(2);
+                            }
+                            else if(i.FirstOralScore != null && i.SecondOralScore == null && i.ThirdOralScore == null)
+                            {
+                                m.AvgOralScore = (i.FirstOralScore).toFixed(2);
+                            }
+                            else if(i.FirstOralScore == null && i.SecondOralScore != null && i.ThirdOralScore == null)
+                            {
+                                m.AvgOralScore = (i.SecondOralScore).toFixed(2);
+                            }
+                            else if(i.FirstOralScore == null && i.SecondOralScore == null && i.ThirdOralScore != null)
+                            {
+                                m.AvgOralScore = (i.ThirdOralScore).toFixed(2);
+                            }
+                            else if(i.FirstOralScore != null && i.SecondOralScore != null && i.ThirdOralScore != null)
+                            {
+                                m.AvgOralScore = (((i.FirstOralScore) + (i.SecondOralScore) + (i.ThirdOralScore)) / 3).toFixed(2);
+                            }
+                            else if(i.FirstOralScore == null && i.SecondOralScore == null && i.ThirdOralScore == null)
+                            {
+                                m.AvgOralScore = null;
+                            }
+
+                            // tính điểm trung bình 15 phút
+                            if(i.First15minutesScore != null && i.Second15minutesScore != null && i.Third15minutesScore == null)
+                            {
+                                m.Avg15minutesScore = (((i.First15minutesScore) + (i.Second15minutesScore)) / 2).toFixed(2);
+                            }
+                            else if(i.First15minutesScore != null && i.Second15minutesScore == null && i.Third15minutesScore != null)
+                            {
+                                m.Avg15minutesScore = (((i.First15minutesScore) + (i.Third15minutesScore)) / 2).toFixed(2);
+                            }
+                            else if(i.First15minutesScore == null && i.Second15minutesScore != null &&i.Third15minutesScore != null)
+                            {
+                                m.Avg15minutesScore = (((i.Second15minutesScore) + (i.Third15minutesScore)) / 2).toFixed(2);
+                            }
+                            else if(i.First15minutesScore != null && i.Second15minutesScore == null && i.Third15minutesScore == null)
+                            {
+                                m.Avg15minutesScore = (i.First15minutesScore).toFixed(2);
+                            }
+                            else if(i.First15minutesScore == null && i.Second15minutesScore != null && i.Third15minutesScore == null)
+                            {
+                                m.Avg15minutesScore = (i.Second15minutesScore).toFixed(2);
+                            }
+                            else if(i.First15minutesScore == null && i.Second15minutesScore == null && i.Third15minutesScore != null)
+                            {
+                                m.Avg15minutesScore = (i.Third15minutesScore).toFixed(2);
+                            }
+                            else if(i.First15minutesScore != null && i.Second15minutesScore != null && i.Third15minutesScore != null)
+                            {
+                                m.Avg15minutesScore = (((i.First15minutesScore) + (i.Second15minutesScore) + (i.Third15minutesScore)) / 3).toFixed(2);
+                            }
+                            else if(i.First15minutesScore == null && i.Second15minutesScore == null && i.Third15minutesScore == null)
+                            {
+                                m.Avg15minutesScore = null;
+                            }
+                        }
+                        
+                        // tính điểm trung bình môn
+                        for (const i of m.scores) {
+                            if(m.AvgOralScore != null && m.Avg15minutesScore != null && i.OnePeriodScore != null && i.FinalScore != null)
+                            {
+                                i.AvgSubject = (((m.AvgOralScore)* 0.1) + ((m.Avg15minutesScore) * 0.2) + ((i.OnePeriodScore) * 0.3) + ((i.FinalScore) * 0.4)).toFixed(2);
                             }
                             else
                             {
-                                m.semesterSum += Number(i.ScoreFinal);
+                                 i.AvgSubject = null;
                             }
                         }
+                        m.count = 0;
+                        m.AvgSemeter = 0;
+                        // tính điểm trung học kì
+                        for (const i of m.scores) {
+                            if(i.AvgSubject != null)
+                            {
+                                m.count++;
+                                m.AvgSemeter+= i.AvgSubject;
+                            }
+                        }
+
+                        if(m.count >= 13)
+                        {
+                            m.AvgSemeter = ((m.AvgSemeter) / 13).toFixed(2);
+                        }
+                        else{
+                            m.AvgSemeter = null;
+                        }             
+
+
                         m.isShowLoading = false;
                         m.isShowScore = true;
                         eventBus.$emit("isShowToastMessageWas", true);
