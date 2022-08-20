@@ -8,7 +8,7 @@ const store = new Vuex.Store({
     state: {
         user: {},
         URLAPI: 'https://www.vnedu.somee.com'
-            //URLAPI: 'https://localhost:7101'
+        // URLAPI: 'https://localhost:7101'
     },
     getters: {
         user: state => state.user,

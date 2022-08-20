@@ -6,15 +6,15 @@
                     <div class="logo-login">
                     </div>
                 </div>
-                <input ref="username" type="text" class="box-input" placeholder="Tên đăng nhập" v-model="phoneNumber">
+                <input @keyup.enter="clickBtnLogin()" ref="username" type="text" class="box-input" placeholder="Tên đăng nhập" v-model="phoneNumber">
                 <div class="box-pass-user">
-                    <input type="password" id="password" class="box-input" placeholder="Mật khẩu" v-model="passWord">
+                    <input @keyup.enter="clickBtnLogin()" type="password" id="password" class="box-input" placeholder="Mật khẩu" v-model="passWord">
                     <div class="icon-eye" @click="clickBtnIconEye()" :class="{'hide-password': isHidePassword}"></div>
                 </div>
                 <div class="box-forgot-password">
                     <a class="link-forgot-password" @click="clickLinkForgotPassword()" >Quên mật khẩu?</a>
                 </div>
-                <button class="btn-login" @click="clickBtnLogin()" v-on:keyup.enter="keyupBtnLogin()">Đăng nhập</button>
+                <button class="btn-login" @click="clickBtnLogin()">Đăng nhập</button>
             </div>
             <div class="title-copyright">Copyright © 2021 - 2022 VNEDU</div>
         </div>
@@ -146,7 +146,6 @@ export default {
                 .catch(function (res){
                     console.log(res);
                 });
-                
             } 
         },
     },
